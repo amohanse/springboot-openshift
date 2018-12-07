@@ -1,0 +1,3 @@
+#!/bin/bash -e
+
+exec java -jar $JAVA_DATA_DIR/app.jar
