@@ -1,0 +1,24 @@
+#!/bin/bash -e
+
+#Home dir for source code : HOME=/home/jboss
+
+echo "---assemble script starting---"
+echo "---building application using maven---"
+echo "---using $(mvn --version)---"
+
+mvn -e clean package
+
+
+echo "---build artifact lists--"
+ls -lrt $HOME/target
+
+echo "---copying artifact to $JAVA_DATA_DIR"
+cp -v $HOME/target/*.* $JAVA_DATA_DIR 2> /dev/null
+
+if [ $(ls $JAVA_DATA_DIR/*.jar | wc -l) -eq 1 ]; then
+  mv $JAVA_DATA_DIR/*.jar $JAVA_DATA_DIR/app.jar
+  [ ! -f $JAVA_DATA_DIR/app.jar ] && echo "Error building application" && exit 1 
+  echo "---> Application deployed successfully.  jar file is located in $JAVA_DATA_DIR/app.jar"
+else
+  exit 1
+fi
